@@ -76,7 +76,7 @@ func PostHandler(response http.ResponseWriter, request *http.Request) {
 	// if method is get
 	case http.MethodGet:
 		var post models.Post
-		var user models.User
+		//var user models.User
 
 		// extracting post id from request url
 		id := path.Base(request.RequestURI)
@@ -95,7 +95,7 @@ func PostHandler(response http.ResponseWriter, request *http.Request) {
 		}
 
 		// fetch post with post id
-		err = postsCollection.FindOne(context.TODO(), bson.M{"_id": docID}).Decode(&user)
+		err = postsCollection.FindOne(context.TODO(), bson.M{"_id": docID}).Decode(&post)
 
 		// if error in fetching post
 		if err != nil {
