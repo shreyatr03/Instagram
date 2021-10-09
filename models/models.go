@@ -4,7 +4,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-//Create Struct
+// post structure
 type Post struct {
 	Id        primitive.ObjectID  `json:"_id,omitempty" bson:"_id,omitempty"`
 	Caption   string              `json:"caption" bson:"caption"`
@@ -13,6 +13,7 @@ type Post struct {
 	UserId    primitive.ObjectID  `json:"userId,omitempty" bson:"userId,omitempty"`
 }
 
+// user structure
 type User struct {
 	Id       primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
 	Name     string             `json:"name" bson:"name" `
