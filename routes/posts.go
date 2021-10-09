@@ -21,15 +21,27 @@ func PostsHandlers(response http.ResponseWriter, request *http.Request) {
 
 	case http.MethodPost:
 		var post models.Post
+		var user models.User
+
 		json.NewDecoder(request.Body).Decode(&post)
 
+		uid := post.UserId
+		log.Println(uid)
+
 		var instaDatabase = helper.ConnectDB().Database("instadb")
+		var usersCollection = instaDatabase.Collection("user")
+		err := usersCollection.FindOne(context.TODO(), bson.M{"_id": uid}).Decode(&user)
+
+		if err != nil {
+			log.Fatal("hi")
+		}
+
 		var postsCollection = instaDatabase.Collection("post")
 		post.TimeStamp = primitive.Timestamp{T: uint32(time.Now().Unix())}
 
-		postResult, err := postsCollection.InsertOne(context.TODO(), post)
+		postResult, err1 := postsCollection.InsertOne(context.TODO(), post)
 
-		if err != nil {
+		if err1 != nil {
 			log.Fatal(err)
 		}
 

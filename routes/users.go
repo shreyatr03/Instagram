@@ -28,7 +28,7 @@ func UsersHandlers(response http.ResponseWriter, request *http.Request) {
 		userResult, err := usersCollection.InsertOne(context.TODO(), user)
 
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println(user)
 		}
 
 		fmt.Println(userResult.InsertedID)
