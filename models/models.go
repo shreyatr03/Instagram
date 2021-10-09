@@ -7,15 +7,15 @@ import (
 //Create Struct
 type Post struct {
 	Id        primitive.ObjectID  `json:"_id,omitempty" bson:"_id,omitempty"`
-	Caption   string              `json:"caption,omitempty" bson:"caption,omitempty"`
-	Image_URL string              `json:"image" bson:"image,omitempty"`
-	TimeStamp primitive.Timestamp `json:"timestamp" bson:"timestamp,omitempty"`
-	User      *User               `json:"user" bson:"user,omitempty"`
+	Caption   string              `json:"caption" bson:"caption"`
+	Image_URL string              `json:"image,omitempty" bson:"image,omitempty"`
+	TimeStamp primitive.Timestamp `json:"timestamp" bson:"timestamp"`
 }
 
 type User struct {
 	Id       int    `json:"_id,omitempty" bson:"_id,omitempty"`
-	Name     string `json:"name,omitempty" bson:"name,omitempty" `
-	Email    string `json:"email,omitempty" bson:"email,omitempty"`
-	Password string `json:"password,omitempty" bson:"password,omitempty"`
+	Name     string `json:"name" bson:"name" `
+	Email    string `json:"email" bson:"email"`
+	Password string `json:"password" bson:"password"`
+	Posts    []Post `json:"posts" bson:"posts"`
 }
