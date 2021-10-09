@@ -7,11 +7,11 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/users", routes.UsersHandlers)
-	http.HandleFunc("/users/", routes.UserHandlers)
-	http.HandleFunc("/posts", routes.PostsHandlers)
-	http.HandleFunc("/posts/", routes.PostHandlers)
-	// http.HandleFunc("/users/{id}", routes.UserHandlers)
+	http.HandleFunc("/users", routes.UsersHandler)
+	http.HandleFunc("/users/", routes.UserHandler)
+	http.HandleFunc("/posts", routes.PostsHandler)
+	http.HandleFunc("/posts/", routes.PostHandler)
+	http.HandleFunc("/posts/users/", routes.UserPostsHandler)
 
 	err := http.ListenAndServe(":8081", nil)
 	if err != nil {

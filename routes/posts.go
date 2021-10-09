@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"path"
+	"reflect"
 	"time"
 
 	"github.com/shreyatr03/Instagram/helper"
@@ -15,7 +17,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func PostsHandlers(response http.ResponseWriter, request *http.Request) {
+func PostsHandler(response http.ResponseWriter, request *http.Request) {
 
 	switch request.Method {
 
@@ -53,10 +55,12 @@ func PostsHandlers(response http.ResponseWriter, request *http.Request) {
 	}
 }
 
-func PostHandlers(response http.ResponseWriter, request *http.Request) {
+func PostHandler(response http.ResponseWriter, request *http.Request) {
 	switch request.Method {
 	case http.MethodGet:
 		var post models.Post
+		var user models.User
+
 		id := path.Base(request.RequestURI)
 
 		var instaDatabase = helper.ConnectDB().Database("instadb")
@@ -68,11 +72,58 @@ func PostHandlers(response http.ResponseWriter, request *http.Request) {
 			log.Println("Invalid id")
 		}
 
-		err = postsCollection.FindOne(context.TODO(), bson.M{"_id": docID}).Decode(&post)
+		err = postsCollection.FindOne(context.TODO(), bson.M{"_id": docID}).Decode(&user)
 		if err != nil {
 			log.Println(err)
 		}
 		json.NewEncoder(response).Encode(post)
+
+	default:
+		http.Error(response, "Method not allowed", http.StatusMethodNotAllowed)
+	}
+}
+
+func UserPostsHandler(response http.ResponseWriter, request *http.Request) {
+	switch request.Method {
+	case http.MethodGet:
+		uid := path.Base(request.RequestURI)
+		fmt.Println("hi")
+		var posts models.Posts
+
+		var instaDatabase = helper.ConnectDB().Database("instadb")
+		var postsCollection = instaDatabase.Collection("post")
+
+		docID, err := primitive.ObjectIDFromHex(uid)
+		fmt.Println(docID)
+		if err != nil {
+			log.Println("Invalid id")
+		}
+
+		cursor, err := postsCollection.Find(context.TODO(), bson.D{{"userId", uid}})
+		if err != nil {
+			log.Println(err)
+			defer cursor.Close(context.TODO())
+		} else {
+			var post models.Post
+
+			for cursor.Next(context.TODO()) {
+				// Declare a result BSON object
+				var result bson.M
+				err := cursor.Decode(&post)
+
+				// If there is a cursor.Decode error
+				if err != nil {
+					fmt.Println("cursor.Next() error:", err)
+					os.Exit(1)
+					// If there are no cursor.Decode errors
+				} else {
+					fmt.Println("\nresult type:", reflect.TypeOf(result))
+					fmt.Println("result:", post)
+					//posts = append(posts, post)
+				}
+			}
+		}
+		json.NewEncoder(response).Encode(posts)
 
 	default:
 		http.Error(response, "Method not allowed", http.StatusMethodNotAllowed)

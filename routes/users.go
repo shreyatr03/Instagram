@@ -14,7 +14,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func UsersHandlers(response http.ResponseWriter, request *http.Request) {
+func UsersHandler(response http.ResponseWriter, request *http.Request) {
 
 	switch request.Method {
 
@@ -39,10 +39,11 @@ func UsersHandlers(response http.ResponseWriter, request *http.Request) {
 	}
 }
 
-func UserHandlers(response http.ResponseWriter, request *http.Request) {
+func UserHandler(response http.ResponseWriter, request *http.Request) {
 	switch request.Method {
 	case http.MethodGet:
 		var user models.User
+
 		id := path.Base(request.RequestURI)
 
 		var instaDatabase = helper.ConnectDB().Database("instadb")
