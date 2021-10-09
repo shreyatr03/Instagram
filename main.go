@@ -8,9 +8,9 @@ import (
 
 func main() {
 	http.HandleFunc("/users", routes.UsersHandlers)
-	http.HandleFunc("/users/:id", routes.UserHandlers)
+	http.HandleFunc("/users/", routes.UserHandlers)
 	http.HandleFunc("/posts", routes.PostsHandlers)
-	// http.HandleFunc("/users/{id}", routes.UserHandlers)
+	http.HandleFunc("/posts/", routes.PostHandlers)
 	// http.HandleFunc("/users/{id}", routes.UserHandlers)
 
 	err := http.ListenAndServe(":8081", nil)
