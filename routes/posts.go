@@ -6,9 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"path"
-	"reflect"
 	"time"
 
 	"github.com/shreyatr03/Instagram/helper"
@@ -87,7 +85,7 @@ func UserPostsHandler(response http.ResponseWriter, request *http.Request) {
 	switch request.Method {
 	case http.MethodGet:
 		uid := path.Base(request.RequestURI)
-		fmt.Println("hi")
+
 		var posts models.Posts
 
 		var instaDatabase = helper.ConnectDB().Database("instadb")
@@ -99,32 +97,21 @@ func UserPostsHandler(response http.ResponseWriter, request *http.Request) {
 			log.Println("Invalid id")
 		}
 
-		cursor, err := postsCollection.Find(context.TODO(), bson.D{{"userId", uid}})
+		cursor, err := postsCollection.Find(context.TODO(), bson.D{{"userId", docID}})
 		if err != nil {
 			log.Println(err)
-			defer cursor.Close(context.TODO())
 		} else {
 			var post models.Post
-
+			fmt.Println("Results All: ", posts)
 			for cursor.Next(context.TODO()) {
-				// Declare a result BSON object
-				var result bson.M
 				err := cursor.Decode(&post)
-
-				// If there is a cursor.Decode error
 				if err != nil {
-					fmt.Println("cursor.Next() error:", err)
-					os.Exit(1)
-					// If there are no cursor.Decode errors
-				} else {
-					fmt.Println("\nresult type:", reflect.TypeOf(result))
-					fmt.Println("result:", post)
-					//posts = append(posts, post)
+					fmt.Print(err)
 				}
+				posts = append(posts, post)
 			}
 		}
 		json.NewEncoder(response).Encode(posts)
-
 	default:
 		http.Error(response, "Method not allowed", http.StatusMethodNotAllowed)
 	}
